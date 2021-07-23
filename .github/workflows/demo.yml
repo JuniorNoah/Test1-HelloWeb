@@ -3,12 +3,10 @@ name: CI_MinCheol_HelloWeb
 on:
   push:
     branches: 
-      - '**'
+      - dsloud-pathch-1
   pull_request:
     branches: 
-      - '**'
-  workflow_dispatch:
-
+      - dsloud-patch-1
 
 jobs:
   build:
@@ -23,10 +21,10 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: teichae/node
+          images: hello_web
           tag-semver: |
             {{version}}
-            {{major}} , {{minor}}
+            {{major}} . {{minor}}
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
