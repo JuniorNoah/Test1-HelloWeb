@@ -1,0 +1,48 @@
+name: CI_MinCheol_HelloWeb
+
+on:
+  push:
+    branches: 
+      - '**'
+  pull_request:
+    branches: 
+      - '**'
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v2
+
+      - 
+        name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: test
+          tag-semver: |
+            {{version}}
+            {{major}} . {{minor}}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.CI_TEST_USERNAME }}
+          password: ${{ secrets.CI_TEST_TOKEN_DOCKER }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tag }}
+          labels: ${{ steps.docker_meta.output.labels }}
